@@ -3,22 +3,8 @@
 """
 PJP 2016 - cvičení číslo 2
 """
-from scipy.spatial import Delaunay
+from math import acos, sqrt, pi
 
-
-def in_hull(p, hull):
-    """
-    Test if points in `p` are in `hull`
-
-    `p` should be a `NxK` coordinates of `N` points in `K` dimensions
-    `hull` is either a scipy.spatial.Delaunay object or the `MxK` array of the
-    coordinates of `M` points in `K`dimensions for which Delaunay triangulation
-    will be computed
-    """
-    if not isinstance(hull, Delaunay):
-        hull = Delaunay(hull)
-
-    return hull.find_simplex(p) >= 0
 
 
 def is_convex(a, b, c, d):
@@ -33,7 +19,40 @@ def is_convex(a, b, c, d):
     Je potřeba aby funkce hlídala i extrémní situace, jako například,
     že body čtyřúhelník vůbec nevytváří.
     """
-    return a == b == c == d
+    # return trickyHull(a, b, c, d)  # pretty simple solution.
+    for i in a, b, c, d:
+        vectors = []
+        for j in a, b, c, d:  # points different to i
+            if i == j: continue
+            vectors.append([j[0] - i[0], j[1] - i[1]])
+        if len(vectors) != 3 or not IsVectorInsideHull(vectors):
+            return False
+    return True
+
+
+def IsVectorInsideHull(vectors):
+    return 0 < angle(vectors[0], vectors[1]) + angle(vectors[0], vectors[2]) < pi
+
+
+def angle(v1, v2):
+    scalar_sum = v1[0]*v2[0]+v1[1]*v2[1]
+    v1_len = sqrt(v1[0]**2+v1[1]**2)
+    v2_len = sqrt(v2[0]**2+v2[1]**2)
+    return acos(scalar_sum/(v1_len*v2_len))
+
+
+def trickyHull(*points):
+    """
+    This solution uses library from scipy to construct convex hull
+    If convex hull have'nt 4 vertices then it is not convex quadrilateral
+    """
+    from scipy.spatial import ConvexHull
+    from scipy.spatial.qhull import QhullError
+    try:
+        hull = ConvexHull(points)
+    except QhullError:
+        return False
+    return len(hull.vertices) == 4
 
 
 if __name__ == '__main__':
