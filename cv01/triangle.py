@@ -8,4 +8,8 @@ def triangle(a, b, c):
     pravouhly trojuhelnik
     """
     a, b, c = sorted([a, b, c])
-    return c == math.sqrt(a**2 + b**2)
+    return c == math.sqrt(a ** 2 + b ** 2)
+
+
+if __name__ == '__main__':
+    assert triangle(3, 4, 5)
