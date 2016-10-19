@@ -20,6 +20,7 @@ def is_convex(a, b, c, d):
     že body čtyřúhelník vůbec nevytváří.
     """
     # return trickyHull(a, b, c, d)  # pretty simple solution.
+    # return usingArea(a, b, c, d)
     return usingAngle(a, b, c, d)
 
 
@@ -35,7 +36,18 @@ def usingAngle(*points):
 
 
 def usingArea(*points):
-    pass
+    S = []
+    for i in points:
+        t = list(filter(lambda x: x != i, points))
+        if len(t) != 3: return False
+        edges = [[t[0][0] - t[1][0], t[0][1] - t[1][1]],
+                 [t[1][0] - t[2][0], t[1][1] - t[2][1]],
+                 [t[0][0] - t[2][0], t[0][1] - t[2][1]]]
+        l = list(map(lambda x: sqrt(x[0]**2 + x[1]**2), edges))
+        s = sum(l)/2
+        S.append(round(sqrt(s*(s - l[0])*(s - l[1])*(s - l[2])), 10))
+    S.sort()
+    return sum(S[:3]) != S[3]
 
 
 def IsVectorInsideHull(vectors):
