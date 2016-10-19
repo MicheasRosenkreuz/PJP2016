@@ -6,7 +6,6 @@ PJP 2016 - cvičení číslo 2
 from math import acos, sqrt, pi
 
 
-
 def is_convex(a, b, c, d):
     """
     Druhým úkolem je vytvořit funkci, která ze čtyř zadaných bodů určí,
@@ -19,49 +18,62 @@ def is_convex(a, b, c, d):
     Je potřeba aby funkce hlídala i extrémní situace, jako například,
     že body čtyřúhelník vůbec nevytváří.
     """
-    # return trickyHull(a, b, c, d)  # pretty simple solution.
-    # return usingArea(a, b, c, d)
-    return usingAngle(a, b, c, d)
+    # return tricky_hull(a, b, c, d)  # pretty simple solution.
+    # return using_area(a, b, c, d)
+    return using_angle(a, b, c, d)
 
 
-def usingAngle(*points):
+def using_angle(*points):
+    """
+    Zjednodušeně: tato metoda testuje zda se bod nachází vně convexhull(v tomto případě trojuhelník).
+    součet úhlu mezi vektory tvořeným testovaným bodem a těmy ostatními nesmí být větší jak půlkruh.
+    """
     for i in points:
         vectors = []
         for j in points:  # points different to i
-            if i == j: continue
+            if i == j:
+                continue
             vectors.append([j[0] - i[0], j[1] - i[1]])
-        if len(vectors) != 3 or not IsVectorInsideHull(vectors):
+        if len(vectors) != 3 or not _is_vector_inside_hull(vectors):
             return False
     return True
 
 
-def usingArea(*points):
-    S = []
-    for i in points:
-        t = list(filter(lambda x: x != i, points))
-        if len(t) != 3: return False
+def using_area(*points):
+    """
+    Tato metoda počítá obsach všech trojúhelníků, které body mohou tvořit.
+    Jestliže součet obsahu tří nejmenších trojúhelníku je roven obsahu největšího, pak se jedná
+    o konkávní čtyřúhelník.
+    """
+    area = []
+    for p in points:
+        t = list(filter(lambda x: x != p, points))
+        if len(t) != 3:
+            return False
         edges = [[t[0][0] - t[1][0], t[0][1] - t[1][1]],
                  [t[1][0] - t[2][0], t[1][1] - t[2][1]],
                  [t[0][0] - t[2][0], t[0][1] - t[2][1]]]
-        l = list(map(lambda x: sqrt(x[0]**2 + x[1]**2), edges))
-        s = sum(l)/2
-        S.append(round(sqrt(s*(s - l[0])*(s - l[1])*(s - l[2])), 10))
-    S.sort()
-    return sum(S[:3]) != S[3]
+        edg = list(map(lambda x: sqrt(x[0] ** 2 + x[1] ** 2), edges))
+        s = sum(edg) / 2
+        area.append(round(sqrt(s * (s - edg[0]) * (s - edg[1]) * (s - edg[2])), 10))
+    area.sort()
+    # Pokud součet 3 nejmenčích ploch je roven největší ploše, pak se jedná o konkávní čtyřúhelník
+    return sum(area[:3]) != area[3]
 
 
-def IsVectorInsideHull(vectors):
-    return 0 < (angle(vectors[0], vectors[1]) + angle(vectors[1], vectors[2]) + angle(vectors[0], vectors[2]))/2 < pi
+def _is_vector_inside_hull(vectors):
+    return 0 < (_angle(vectors[0], vectors[1]) + _angle(vectors[1], vectors[2]) + _angle(vectors[0],
+                                                                                         vectors[2])) / 2 < pi
 
 
-def angle(v1, v2):
-    scalar_sum = v1[0]*v2[0]+v1[1]*v2[1]
-    v1_len = sqrt(v1[0]**2+v1[1]**2)
-    v2_len = sqrt(v2[0]**2+v2[1]**2)
-    return acos(scalar_sum/(v1_len*v2_len))
+def _angle(v1, v2):
+    scalar_sum = v1[0] * v2[0] + v1[1] * v2[1]
+    v1_len = sqrt(v1[0] ** 2 + v1[1] ** 2)
+    v2_len = sqrt(v2[0] ** 2 + v2[1] ** 2)
+    return acos(scalar_sum / (v1_len * v2_len))
 
 
-def trickyHull(*points):
+def tricky_hull(*points):
     """
     This solution uses library from scipy to construct convex hull
     If convex hull have'nt 4 vertices then it is not convex quadrilateral
