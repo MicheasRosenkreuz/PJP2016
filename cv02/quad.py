@@ -20,9 +20,13 @@ def is_convex(a, b, c, d):
     že body čtyřúhelník vůbec nevytváří.
     """
     # return trickyHull(a, b, c, d)  # pretty simple solution.
-    for i in a, b, c, d:
+    return usingAngle(a, b, c, d)
+
+
+def usingAngle(*points):
+    for i in points:
         vectors = []
-        for j in a, b, c, d:  # points different to i
+        for j in points:  # points different to i
             if i == j: continue
             vectors.append([j[0] - i[0], j[1] - i[1]])
         if len(vectors) != 3 or not IsVectorInsideHull(vectors):
@@ -30,8 +34,12 @@ def is_convex(a, b, c, d):
     return True
 
 
+def usingArea(*points):
+    pass
+
+
 def IsVectorInsideHull(vectors):
-    return 0 < angle(vectors[0], vectors[1]) + angle(vectors[0], vectors[2]) < pi
+    return 0 < (angle(vectors[0], vectors[1]) + angle(vectors[1], vectors[2]) + angle(vectors[0], vectors[2]))/2 < pi
 
 
 def angle(v1, v2):
