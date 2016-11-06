@@ -11,7 +11,7 @@ PyTest si sám najde testy a postará se o jejich provedení.
 PyTest si můžete nainstalovat přes pip a je také součástí distribuce Anaconda
 """
 
-import quad
+import franta_quad as quad
 
 def test_convex_is_true():
     """

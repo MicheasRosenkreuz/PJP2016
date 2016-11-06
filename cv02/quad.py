@@ -54,6 +54,7 @@ def using_area(*points):
                  [t[1][0] - t[2][0], t[1][1] - t[2][1]],
                  [t[0][0] - t[2][0], t[0][1] - t[2][1]]]
         edg = list(map(lambda x: sqrt(x[0] ** 2 + x[1] ** 2), edges))
+        # Heronův vzorec
         s = sum(edg) / 2
         area.append(round(sqrt(s * (s - edg[0]) * (s - edg[1]) * (s - edg[2])), 10))
     area.sort()
@@ -62,8 +63,9 @@ def using_area(*points):
 
 
 def _is_vector_inside_hull(vectors):
-    return 0 < (_angle(vectors[0], vectors[1]) + _angle(vectors[1], vectors[2]) + _angle(vectors[0],
-                                                                                         vectors[2])) / 2 < pi
+    return 0 < \
+           (_angle(vectors[0], vectors[1]) + _angle(vectors[1], vectors[2]) + _angle(vectors[0], vectors[2])) / 2\
+           < pi
 
 
 def _angle(v1, v2):
