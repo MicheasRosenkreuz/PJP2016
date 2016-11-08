@@ -37,3 +37,13 @@ crashlytics-build.properties
 fabric.properties
 /.flooignore
 /.floo
+
+## Vim.gitignore
+# swap
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+# session
+Session.vim
+# temporary
+.netrwhist
+*~
