@@ -172,10 +172,9 @@ def test_split_text():
     assert result == cestina.split_text(text)
 
 
-def test_pomlcka():
+def test_cesky2():
     """
-    Je tam pomlčka (ano pomlčka, ne spojovník)
-    Btw. je číslo slovo?
+    test
     """
     text = ('Letos je tomu 41 let. Ten říjnový den jsem utíkala z budovy '
             'konzervatoře do knihovny na Mariánském náměstí, abych se '
