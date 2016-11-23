@@ -23,7 +23,7 @@ def test_1_max_true():
     locks: max
     expect: True
     """
-    filename = 'doors1.txt'
+    filename = 'doors.txt'
     assert list(doors.doors(filename)) == [True, ]
 
 
@@ -33,5 +33,15 @@ def test_3_100_true():
     locks: 3x100
     expect: all True
     """
-    filename = 'f1.txt'
+    filename = 'doors1.txt'
     assert list(doors.doors(filename)) == [True, True, True]
+
+
+def test_1_max_false():
+    """
+    doors: 1
+    locks: max
+    expect: False
+    """
+    filename = 'false_doors.txt'
+    assert list(doors.doors(filename)) == [False, ]
