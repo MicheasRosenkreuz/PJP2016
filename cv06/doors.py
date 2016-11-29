@@ -21,16 +21,19 @@ Vstupní data jsou pak uložena v souboru doors.txt:
 """
 import codecs
 from collections import defaultdict
+from copy import copy
 
 
-def doors(file_name):
+def doors(file_name, test=None):
     """
     vrací iterable hodnot typu boolean určující funkčnost puzzle pro jednotlivé
     sady slov
     :param file: Vstupní soubor
     :return: ANO (True); NE (False)
     """
-    return (_testit(words) for words in _get_wordlist(file_name))
+    if test is None:
+        test = _testit
+    return (test(words) for words in _get_wordlist(file_name))
 
 
 def _get_wordlist(file_name):
@@ -39,7 +42,7 @@ def _get_wordlist(file_name):
     """
     ifile = codecs.open(file_name, 'r', encoding='utf-8')
     for _ in range(int(ifile.__next__())):
-        yield (ifile.__next__().strip() for _w in range(int(ifile.__next__())))
+        yield (ifile.__next__().strip() for _ in range(int(ifile.__next__())))
 
 
 def _testit(words):
@@ -52,9 +55,29 @@ def _testit(words):
         pairs[word[-1].lower()][1] += 1
     lst = sorted([pair[0] - pair[1] for pair in pairs.values()])
     return all(i == 0 for i in lst[1:-1]) and \
-        lst[-1] <= 1 and sum(lst[::len(lst) - 1]) == 0
+           lst[-1] <= 1 and sum(lst[::len(lst) - 1]) == 0
+
+
+def _alternative(words):
+    wordlist = list(words)
+    counter = []
+    for word in wordlist:
+        used = set()
+        counter.append(__geterate_tree(word, wordlist, used, 1))
+    return max(counter) == len(wordlist)
+
+
+def __geterate_tree(word, wordlist, used, length):
+    used.add(word)
+    counter = []
+    for _word in (w for w in wordlist if w.startswith(word[-1])):
+        if _word not in used and _word is not None:
+            counter.append(
+                __geterate_tree(_word, wordlist, copy(used), length + 1))
+    if counter:
+        return max(counter)
+    return length
 
 
 if __name__ == "__main__":
-    for i in doors("_d2.txt"):
-        print(i)
+    print(list(doors("large.txt")))
