@@ -54,6 +54,44 @@ def _testit(words):
     return all(i == 0 for i in lst[1:-1]) and \
         lst[-1] <= 1 and sum(lst[::len(lst) - 1]) == 0
 
+def jedna_komponenta(slova):
+    """
+    zjisti, zda se slova skladaj z jedne souvisle komponenty
+    input list slova
+    return True - jedna komponenta
+    return False - vice komponent
+    """
+    # pouze unikatni slova, cyklovy list
+    slova1 = list(set(slova))
+    # nastaveni pracovniho listu pro mazani prvku
+    slova2 = list(slova1)
+    prvni_pismena = []
+    posledni_pismena = []
+    index = 0
+    aktual = slova1[0]
+    slova2.remove(aktual)
+    prvni_pismena.append(aktual[:1])
+    posledni_pismena.append(aktual[-1:])
+    # cyklus jede, pokud nejsou pouzity vsechny prvky v listech prvnich a poslednich pismen
+    # pro kazdy prvek zjisti, zda existuje takove slovo, na ktere lze navazat
+    # lze na slovo navazat pokud: prvni_pismeno == posledni pismeno slova
+    # nebo posledni_pismeno == prvni pismeno slova
+    # z tohoto slova se ulozi prvni a posledni pismena do listu, pokud tam jiz nejsou
+    # slovo se smaze z pracovniho listu
+    # zvysi se index pro dalsi prochazeni whilu
+    while index < len(prvni_pismena) or index < len(posledni_pismena):
+        aktual_prvni = prvni_pismena[index] if index < len(prvni_pismena) else ''
+        aktual_posledni = posledni_pismena[index] if index < len(posledni_pismena) else ''
+        for slovo in slova1:
+            if slovo[:1] == aktual_posledni or slovo[-1:] == aktual_prvni:
+                if slovo[:1] not in prvni_pismena:
+                    prvni_pismena.append(slovo[:1])
+                if slovo[-1:] not in posledni_pismena:
+                    posledni_pismena.append(slovo[-1:])
+                if slovo in slova2:
+                    slova2.remove(slovo)
+        index += 1
+    return True if len(slova2) == 0 else False
 
 if __name__ == "__main__":
     for i in doors("_d2.txt"):
