@@ -14,7 +14,11 @@ spusťe test - příkazem py.test
 Pytest prohledá aktuální adresář (a adresáře vnořené) a spustí
 nalezené testy.
 """
+import sys
+
 import doors
+import importlib
+runpy = importlib.import_module('__main__', doors)
 
 
 def test_1_max_true():
@@ -45,3 +49,32 @@ def test_1_max_false():
     """
     filename = 'false_doors.txt'
     assert list(doors.doors(filename)) == [False, ]
+
+
+def test_small():
+    """
+    doors: 1
+    locks: max
+    expect: False
+    """
+    filename = 'small.txt'
+    assert list(doors.doors(filename)) == [False, True, False]
+
+
+def test_small_alt():
+    """
+    mnohem pomalejsi algoritmus ~O(n^M)
+    """
+    filename = 'small.txt'
+    assert list(doors.doors(filename, doors._alternative)) == \
+           [False, True, False]
+
+
+def test_large():
+    """
+    doors: 1
+    locks: max
+    expect: False
+    """
+    filename = 'large.txt'
+    assert list(doors.doors(filename)) == [False, False]
