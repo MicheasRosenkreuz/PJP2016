@@ -22,6 +22,9 @@ Vstupní data jsou pak uložena v souboru doors.txt:
 import codecs
 from collections import defaultdict
 from copy import copy
+__author__ = "Michal Jirásek"
+__email__ = "michal.jirasek@tul.cz"
+__credits__ = "Frantisek Jukl (Antoninecek)"
 
 
 def doors(file_name, test=None):
@@ -49,8 +52,11 @@ def _testit(words):
     """
     determines whether the puzzle opens doors
     """
+    w_list = list(words)
     pairs = defaultdict(lambda: [0, 0])
-    for word in words:
+    if not _is_component(w_list):
+        return False
+    for word in w_list:
         pairs[word[0].lower()][0] += 1
         pairs[word[-1].lower()][1] += 1
     lst = sorted([pair[0] - pair[1] for pair in pairs.values()])
@@ -78,44 +84,29 @@ def __geterate_tree(word, wordlist, used, length):
         return max(counter)
     return length
 
-def jedna_komponenta(slova):
+
+def _is_component(words):
     """
+    @author = "Frantisek Jukl (Antoninecek)"
     zjisti, zda se slova skladaj z jedne souvisle komponenty
     input list slova
     return True - jedna komponenta
     return False - vice komponent
     """
-    # pouze unikatni slova, cyklovy list
-    slova1 = list(set(slova))
-    # nastaveni pracovniho listu pro mazani prvku
-    slova2 = list(slova1)
-    prvni_pismena = []
-    posledni_pismena = []
+    init_word = words[0]
+    words = set(words)  # odstrani duplicity
+    seen = {init_word, }
+    first_ch = {init_word[0], }
+    last_ch = {init_word[-1], }
     index = 0
-    aktual = slova1[0]
-    slova2.remove(aktual)
-    prvni_pismena.append(aktual[:1])
-    posledni_pismena.append(aktual[-1:])
-    # cyklus jede, pokud nejsou pouzity vsechny prvky v listech prvnich a poslednich pismen
-    # pro kazdy prvek zjisti, zda existuje takove slovo, na ktere lze navazat
-    # lze na slovo navazat pokud: prvni_pismeno == posledni pismeno slova
-    # nebo posledni_pismeno == prvni pismeno slova
-    # z tohoto slova se ulozi prvni a posledni pismena do listu, pokud tam jiz nejsou
-    # slovo se smaze z pracovniho listu
-    # zvysi se index pro dalsi prochazeni whilu
-    while index < len(prvni_pismena) or index < len(posledni_pismena):
-        aktual_prvni = prvni_pismena[index] if index < len(prvni_pismena) else ''
-        aktual_posledni = posledni_pismena[index] if index < len(posledni_pismena) else ''
-        for slovo in slova1:
-            if slovo[:1] == aktual_posledni or slovo[-1:] == aktual_prvni:
-                if slovo[:1] not in prvni_pismena:
-                    prvni_pismena.append(slovo[:1])
-                if slovo[-1:] not in posledni_pismena:
-                    posledni_pismena.append(slovo[-1:])
-                if slovo in slova2:
-                    slova2.remove(slovo)
+    while index < max(len(first_ch), len(last_ch)):
+        for word in words:
+            if word[:1] in last_ch or word[-1:] in first_ch:
+                first_ch.add(word[:1])
+                last_ch.add(word[-1:])
+                seen.add(word)
         index += 1
-    return True if len(slova2) == 0 else False
+    return len(seen) == len(words)
 
 if __name__ == "__main__":
-    print(list(doors("large.txt")))
+    print(list(doors("doors.txt")))
