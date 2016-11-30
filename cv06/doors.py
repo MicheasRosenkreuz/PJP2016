@@ -22,6 +22,9 @@ Vstupní data jsou pak uložena v souboru doors.txt:
 import codecs
 from collections import defaultdict
 from copy import copy
+__author__ = "Michal Jirásek"
+__email__ = "michal.jirasek@tul.cz"
+__credits__ = "Frantisek Jukl (Antoninecek)"
 
 
 def doors(file_name, test=None):
@@ -49,8 +52,11 @@ def _testit(words):
     """
     determines whether the puzzle opens doors
     """
+    w_list = list(words)
     pairs = defaultdict(lambda: [0, 0])
-    for word in words:
+    if not _is_component(w_list):
+        return False
+    for word in w_list:
         pairs[word[0].lower()][0] += 1
         pairs[word[-1].lower()][1] += 1
     lst = sorted([pair[0] - pair[1] for pair in pairs.values()])
@@ -79,5 +85,29 @@ def __geterate_tree(word, wordlist, used, length):
     return length
 
 
+def _is_component(words):
+    """
+    @author = "Frantisek Jukl (Antoninecek)"
+    zjisti, zda se slova skladaj z jedne souvisle komponenty
+    input list slova
+    return True - jedna komponenta
+    return False - vice komponent
+    """
+    init_word = words[0]
+    words = set(words)  # odstrani duplicity
+    seen = {init_word, }
+    first_ch = {init_word[0], }
+    last_ch = {init_word[-1], }
+    index = 0
+    while index < max(len(first_ch), len(last_ch)):
+        for word in words:
+            if word[:1] in last_ch or word[-1:] in first_ch:
+                first_ch.add(word[:1])
+                last_ch.add(word[-1:])
+                seen.add(word)
+        index += 1
+    return len(seen) == len(words)
+
+
 if __name__ == "__main__":
-    print(list(doors("large.txt")))
+    print(list(doors("doors.txt")))
