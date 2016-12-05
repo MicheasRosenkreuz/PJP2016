@@ -65,6 +65,56 @@ def _testit(words):
 
 
 def _alternative(words):
+    """
+    My version of algorithm for hamiltonian path problem.
+    Searching all permutation of graph nodes.
+    Really slow algorithm: O(n**2*2**n).
+    """
+    wordlist = list(words)
+    counter = []
+    for word in wordlist:
+        used = set()
+        counter.append(__geterate_tree(word, wordlist, used, 1))
+    return max(counter) == len(wordlist)
+
+
+def __geterate_tree(word, wordlist, used, length):
+    used.add(word)
+    counter = []
+    for _word in (w for w in wordlist if w.startswith(word[-1])):
+        if _word not in used and _word is not None:
+            counter.append(
+                __geterate_tree(_word, wordlist, copy(used), length + 1))
+    if counter:
+        return max(counter)
+    return length
+
+
+def _is_component(words):
+    """
+    @author = "Frantisek Jukl (Antoninecek)"
+    zjisti, zda se slova skladaj z jedne souvisle komponenty
+    input list slova
+    return True - jedna komponenta
+    return False - vice komponent
+    """
+    init_word = words[0]
+    words = set(words)  # odstrani duplicity
+    seen = {init_word, }
+    first_ch = {init_word[0], }
+    last_ch = {init_word[-1], }
+    index = 0
+    while index < max(len(first_ch), len(last_ch)):
+        for word in words:
+            if word[:1] in last_ch or word[-1:] in first_ch:
+                first_ch.add(word[:1])
+                last_ch.add(word[-1:])
+                seen.add(word)
+        index += 1
+    return len(seen) == len(words)
+
+
+def _alternative(words):
     wordlist = list(words)
     counter = []
     for word in wordlist:
