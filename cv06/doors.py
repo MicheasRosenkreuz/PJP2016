@@ -65,6 +65,11 @@ def _testit(words):
 
 
 def _alternative(words):
+    """
+    My version of algorithm for hamiltonian path problem.
+    Searching all permutation of graph nodes.
+    Really slow algorithm: O(n**2*2**n).
+    """
     wordlist = list(words)
     counter = []
     for word in wordlist:
