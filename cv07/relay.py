@@ -22,7 +22,9 @@ import codecs
 import inspect
 import json
 import re
-# from pprint import pprint
+from pprint import pprint
+from bs4 import BeautifulSoup
+
 HTML_RESULT = 'result.html'
 JSON_COMPETITORS = 'competitors.json'
 
@@ -44,45 +46,41 @@ def name_hook(obj, dct={}):
         dct.update({obj["firstname"] + ' ' + ' '.join(lname[::-1]): obj["id"]})
 
 
-class FixJson(object):  # pylint: disable=too-few-public-methods
-    """
-    opravi escapnutej apostrof v souboru (pokud jste tak neučinili)
-    a to bez nutnosti cist celej soubor
-    """
-    def __init__(self, file):
-        self.jfile = file
-
-    def read(self):
-        """
-        wrapper pro read(), nic víc.
-        """
-        fread = self.jfile.read()
-        return re.sub(r'\\\'', '\'', fread)
-
-
 def relay():
     """
     extract data from html and json and concatenate them into new json file
     :return: json with result
     """
-    # Load data from html, BS4 by se tu hodil
-    with codecs.open(HTML_RESULT, 'r', encoding='utf-8') as html_file:
-        records = []
+
+    def _bs4(html_file):
+        # je-li libo BS4
+        soup = BeautifulSoup(html_file, "lxml")
+        return re.findall(
+            r'(\d+)\) .+?(\d{0,2}:\d{0,2}:\d{0,2}) \(([\w ,]*)\)',
+            str(soup.find('strong', text="Relay").parent.find_next_siblings('p')))
+
+    def _iterate_lines(html_file):
+        rec = []
         while 1:
             if html_file.__next__().strip() == '<p><strong>Relay</strong></p>':
                 for _ in range(4):
-                    records += re.findall(
+                    rec += re.findall(
                         r'(\d+)\) .+?(\d{0,2}:\d{0,2}:\d{0,2}) \(([\w ,]*)\)'
                         , html_file.__next__().strip())
                 break
+        return rec
+
+    # Load data from html
+    with codecs.open(HTML_RESULT, 'r', encoding='utf-8') as html_file:
+        records = _bs4(html_file)
 
     # Load data from jsonbobo
     with codecs.open(JSON_COMPETITORS, 'r', encoding='utf-8') as json_file:
-        json.load(FixJson(json_file), object_hook=name_hook)
+        json.loads(re.sub(r'\\\'', '\'', json_file.read()), object_hook=name_hook)
     # získá dct z name_hook
     data = inspect.signature(name_hook).parameters['dct'].default
     # data = name_hook.__defaults__[0]
-    # pprint([name for n in records for name in n[2].split(', ')
+    # print([name for n in records for name in n[2].split(', ')
     #         if name in data])
 
     # parse to JSON
