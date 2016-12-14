@@ -1,9 +1,13 @@
 """
-@TODO implementujte dle zadání cvičení 8
+Cviceni 08
+Zadání v README.md
 """
 
 
 class Card(object):
+    """
+    Třída reprezentující hrací kartu s hodnotami pro hru Black Jack
+    """
     # _deck = list()
     _ranks = {**{1: {'value': 1, 'rank': 'ESO', "rod": 0},
                  11: {'value': 10, 'rank': 'K', "rod": 0},
@@ -14,8 +18,7 @@ class Card(object):
     _suits = {1: 's', 2: 'k', 3: 'p', 4: 't'}
     _suits_name = {0: {1: 'srdcové', 2: 'kárové', 3: 'pikové', 4: 'trefové'},
                    1: {1: 'srdcová', 2: 'kárová', 3: 'piková', 4: 'trefová'},
-                   2: {1: 'srdcový', 2: 'kárový', 3: 'pikový', 4: 'trefový'}
-                   }
+                   2: {1: 'srdcový', 2: 'kárový', 3: 'pikový', 4: 'trefový'}}
 
     # pri chybe misto instance vrátí string "Kapradí"
     # def __new__(cls, *args, **kwargs):
@@ -25,7 +28,7 @@ class Card(object):
     #     return super(Card, cls).__new__(cls)
 
     def __init__(self, rank, suit):
-        if not (0 < rank < 14) or not (0 < suit < 5):
+        if not (0 < rank < 14 and 0 < suit < 5):
             raise ValueError
         self._rank = rank
         self._suit = suit
@@ -41,6 +44,12 @@ class Card(object):
 
     def __gt__(self, other):
         return int(self) > int(other)
+
+    def __lt__(self, other):
+        return int(self) < int(other)
+
+    def __le__(self, other):
+        return int(self) <= int(other)
 
     def __eq__(self, other):
         return int(self) == int(other)
@@ -63,29 +72,25 @@ class Card(object):
                self.__suit_code + ' >(' + str(self.__value) + ')'
 
     def rank(self):
+        """
+        :return Card rank
+        """
         return self._rank
 
     def suit(self):
+        """
+        :return Card suit
+        """
         return self.__suit_code
 
     def black_jack_rank(self):
+        """
+        :return Black Jack value of Card
+        """
         return self.__value
 
 
 if __name__ == "__main__":
-    # for s in range(1, 5):
-    #     for r in range(1, 14):
-    #         print(Card(r, s))
-    c1 = Card(2, 1)
-    c2 = Card(2, 1)
-    c3 = Card(11, 2)
-    s = {c2, c3}
-    # c1 a c2 mají stejnej hash díky __hash__()
-    print("c1 in s", c1 in s)
-    # duvod proc v comparatorech porovnavam int(other) a ne other.__value
-    print("c1==2", c1==2)
-    print("c1!=c2", c1!=c2)
-    print("c1<c2", c1<c2)
-    print("c1<=c2", c1<=c2)
-    print("c1>c2", c1>c2)
-    print("c1>=c2", c1>=c2)
+    for s in range(1, 5):
+        for r in range(1, 14):
+            print(Card(r, s))
