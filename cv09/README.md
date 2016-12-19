@@ -1,10 +1,10 @@
 # Úkol 9. - zpracování HTML dokumentů
 
-Na adrese [http://www.nti.tul.cz/~vrany/pjp_data/]() najdete několik html dokumentů, navzájem propojených odkazy. Kořenem této struktury je soubor index.html. V dokumentech se v různé formě vyskytují e-mailové adresy. Některé jsou přímo vidět, jiné jsou trochu schované.
+Na adrese [http://www.nti.tul.cz/~vrany/pjp_data/](http://www.nti.tul.cz/~vrany/pjp_data/) najdete několik html dokumentů, navzájem propojených odkazy. Kořenem této struktury je soubor index.html. V dokumentech se v různé formě vyskytují e-mailové adresy. Některé jsou přímo vidět, jiné jsou trochu schované.
 
 **Cílem cvičení je vytvořit program, který dokáže najít co nejvíc těchto adres.** 
 
-Při výpadku www.nti.tul.cz můžete použít alternativní kopii zdrojových dat na [https://jirivrany.github.io/pjp_html_data/]()
+Při výpadku www.nti.tul.cz můžete použít alternativní kopii zdrojových dat na [https://jirivrany.github.io/pjp_html_data/](https://jirivrany.github.io/pjp_html_data/)
 
 Váš vysledný program musí vyřešit následující úkoly:
 
