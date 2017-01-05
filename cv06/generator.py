@@ -22,7 +22,10 @@ if __name__ == '__main__':
     last = chr(rnd.randrange(97, 122))
     out_list = []
     for _i in range(w_count):
-        _word = rnd.choice(word_tree[last])
+        while 1:
+            _word = rnd.choice(word_tree[last])
+            if _word[-1] in word_tree:
+                break
         out_list.append(_word + '\n')
         if _word[-1] not in word_tree:
             false = True
